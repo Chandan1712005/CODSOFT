@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Mobile Calculator</title>
+    <style>
+        /* ---------- MOBILE LAYOUT ---------- */
+        body {
+            margin: 0;
+            height: 100vh;
+            background: #000;
+            color: #fff;
+            font-family: "SF Pro Display", Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* ---------- Calculator Box ---------- */
+        .calculator-box {
+            width: 320px;
+            height: 90vh;
+            max-height: 600px;
+            background: #000;
+            border: 2px solid #333;
+            border-radius: 30px;
+            box-shadow: 0 0 20px rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ---------- Display ---------- */
+        .display {
+            flex: 1;
+            padding: 20px;
+            font-size: 48px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-end;
+            text-align: right;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        /* ---------- Buttons Container ---------- */
+        .buttons {
+            background: #111;
+            padding: 20px;
+            border-radius: 30px 30px 0 0;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        /* ---------- Buttons ---------- */
+        button {
+            height: 70px;
+            font-size: 28px;
+            border: none;
+            border-radius: 50%;
+            color: #fff;
+            background: #333;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+
+        /* ---------- Colors ---------- */
+        .operator { background: #ff9f0a; }
+        .light-gray { background: #a5a5a5; color: #000; }
+        .equal { background: #ff9500; }
+        .zero { border-radius: 40px; grid-column: span 2; text-align: left; padding-left: 25px; }
+        .sci { background: #007aff; }
+        .memory { background: #8e8e93; color: #000; }
+
+        /* ---------- History Overlay ---------- */
+        .history {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            z-index: 10;
+        }
+        .history ul {
+            list-style: none;
+            padding: 0;
+        }
+        .history li {
+            padding: 5px 0;
+        }
+
+        /* ---------- Responsive scaling ---------- */
+        @media (max-height: 700px) {
+            .calculator-box { height: 85vh; }
+            button { height: 60px; font-size: 24px; }
+            .display { font-size: 40px; }
+        }
+        @media (max-height: 600px) {
+            .calculator-box { height: 80vh; }
+            button { height: 50px; font-size: 20px; }
+            .display { font-size: 32px; }
+        }
+        @media (max-width: 400px) {
+            .calculator-box { width: 90%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-box">
+        <div class="history" id="history">
+            <ul id="historyList"></ul>
+        </div>
+
+        <!-- DISPLAY SCREEN -->
+        <div class="display" id="display">0</div>
+
+        <!-- KEYPAD -->
+        <div class="buttons">
+            <button class="light-gray" onclick="clearDisplay()">AC</button>
+            <button class="light-gray" onclick="toggleSign()">+/-</button>
+            <button class="light-gray" onclick="append('%')">%</button>
+            <button class="operator" onclick="append('/')">÷</button>
+
+            <button onclick="append('7')">7</button>
+            <button onclick="append('8')">8</button>
+            <button onclick="append('9')">9</button>
+            <button class="operator" onclick="append('*')">×</button>
+
+            <button onclick="append('4')">4</button>
+            <button onclick="append('5')">5</button>
+            <button onclick="append('6')">6</button>
+            <button class="operator" onclick="append('-')">−</button>
+
+            <button onclick="append('1')">1</button>
+            <button onclick="append('2')">2</button>
+            <button onclick="append('3')">3</button>
+            <button class="operator" onclick="append('+')">+</button>
+
+            <button class="zero" onclick="append('0')">0</button>
+            <button onclick="append('.')">.</button>
+            <button class="equal" onclick="calculate()">=</button>
+
+            <!-- Advanced buttons (toggle with Sci) -->
+            <button class="sci" id="sciBtn" onclick="toggleSci()">Sci</button>
+            <button class="memory" onclick="memoryAdd()">M+</button>
+            <button class="memory" onclick="memoryRecall()">MR</button>
+            <button class="memory" onclick="memoryClear()">MC</button>
+        </div>
+    </div>
+
+    <script>
+        const display = document.getElementById("display");
+        const history = document.getElementById("history");
+        const historyList = document.getElementById("historyList");
+        const sciBtn = document.getElementById("sciBtn");
+        let memory = 0;
+        let sciMode = false;
+
+        function append(value) {
+            if (display.innerText === "0" && value !== ".") {
+                display.innerText = value;
+            } else {
+                display.innerText += value;
+            }
+        }
+
+        function clearDisplay() {
+            display.innerText = "0";
+        }
+
+        function toggleSign() {
+            let value = parseFloat(display.innerText);
+            if (!isNaN(value)) display.innerText = value * -1;
+        }
+
+        function calculate() {
+            try {
+                let expression = display.innerText.replace(/÷/g, "/").replace(/×/g, "*").replace(/%/g, "/100");
+                let result = Function("return " + expression)();
+                if (!isFinite(result)) throw Error();
+                addToHistory(display.innerText + " = " + result);
+                display.innerText = result;
+                showHistory();
+            } catch {
+                display.innerText = "Error";
+            }
+        }
+
+        function toggleSci() {
+            sciMode = !sciMode;
+            // In sci mode, replace some buttons with sci functions (simplified for mobile)
+            if (sciMode) {
+                sciBtn.innerText = "sin";
+                sciBtn.onclick = () => append("Math.sin(");
+            } else {
+                sciBtn.innerText = "Sci";
+                sciBtn.onclick = toggleSci;
+            }
+        }
+
+        function memoryAdd() {
+            memory += parseFloat(display.innerText) || 0;
+        }
+
+        function memoryRecall() {
+            display.innerText = memory;
+        }
+
+        function memoryClear() {
+            memory = 0;
+        }
+
+        function addToHistory(entry) {
+            let li = document.createElement("li");
+            li.textContent = entry;
+            historyList.appendChild(li);
+            if (historyList.children.length > 5) {
+                historyList.removeChild(historyList.firstChild);
+            }
+        }
+
+        function showHistory() {
+            history.style.display = "block";
+            setTimeout(() => history.style.display = "none", 3000); // Hide after 3s
+        }
+
+        /* Keyboard Support */
+        document.addEventListener("keydown", (e) => {
+            if (/[0-9]/.test(e.key)) append(e.key);
+            if ("+-*/.%".includes(e.key)) append(e.key);
+            if (e.key === "Enter") calculate();
+            if (e.key === "Backspace") display.innerText = display.innerText.slice(0, -1) || "0";
+            if (e.key === "c" || e.key === "C") clearDisplay();
+        });
+    </script>
+</body>
+</html>
