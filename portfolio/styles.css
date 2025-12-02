@@ -1,0 +1,177 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Vibrant gradient background */
+    padding: 20px;
+    min-height: 100vh;
+}
+
+/* Header */
+header {
+    text-align: center;
+    background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); /* Pinkish gradient */
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+header h1 {
+    font-size: 2.5em;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+header p {
+    font-size: 1.2em;
+    margin: 10px 0;
+}
+
+nav a {
+    color: #fff;
+    margin: 0 15px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: #ffd700; /* Gold hover */
+}
+
+/* Sections */
+section {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white for contrast */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-left: 5px solid #4ecdc4; /* Teal accent border */
+}
+
+h2 {
+    color: #2c3e50; /* Dark blue for headings */
+    margin-bottom: 10px;
+    font-size: 1.8em;
+}
+
+/* About */
+#about img {
+    display: block;
+    margin: 0 auto 20px;
+}
+
+/* Skills */
+#skills ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#skills li {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); /* Light gradient for list items */
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    color: #e74c3c; /* Red for emphasis */
+}
+
+/* Projects */
+.project {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); /* Light gradient for projects */
+    border-radius: 8px;
+}
+
+.project h3 {
+    color: #e74c3c; /* Red for project titles */
+}
+
+.project img {
+    margin-bottom: 10px;
+}
+
+.project a {
+    color: #3498db; /* Blue links */
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.project a:hover {
+    color: #e67e22; /* Orange hover */
+}
+
+/* Resume */
+#resume a {
+    color: #9b59b6; /* Purple for download link */
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.2em;
+    transition: color 0.3s ease;
+}
+
+#resume a:hover {
+    color: #f39c12; /* Yellow hover */
+}
+
+/* Contact */
+#contact p {
+    font-size: 1.1em;
+}
+
+#contact a {
+    color: #9b59b6; /* Purple for contact links */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#contact a:hover {
+    color: #f39c12; /* Yellow hover */
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 10px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+footer a {
+    color: #ffd700;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2em;
+    }
+    nav a {
+        display: block;
+        margin: 10px 0;
+    }
+    section {
+        padding: 15px;
+    }
+    #about img {
+        width: 120px;
+        height: 120px;
+    }
+}
